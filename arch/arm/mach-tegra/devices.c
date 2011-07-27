@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2010,2011 Google, Inc.
+ * arch/arm/mach-tegra/devices.c
+ *
+ * Copyright (C) 2010 Google, Inc.
  *
  * Author:
  *	Colin Cross <ccross@android.com>
@@ -26,13 +28,12 @@
 #include <mach/irqs.h>
 #include <mach/iomap.h>
 #include <mach/dma.h>
-#include <mach/nvhost.h>
 
 static struct resource i2c_resource1[] = {
 	[0] = {
-		.start	= INT_I2C,
-		.end	= INT_I2C,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_I2C,
+		.end    = INT_I2C,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_I2C_BASE,
@@ -43,9 +44,9 @@ static struct resource i2c_resource1[] = {
 
 static struct resource i2c_resource2[] = {
 	[0] = {
-		.start	= INT_I2C2,
-		.end	= INT_I2C2,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_I2C2,
+		.end    = INT_I2C2,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_I2C2_BASE,
@@ -56,9 +57,9 @@ static struct resource i2c_resource2[] = {
 
 static struct resource i2c_resource3[] = {
 	[0] = {
-		.start	= INT_I2C3,
-		.end	= INT_I2C3,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_I2C3,
+		.end    = INT_I2C3,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_I2C3_BASE,
@@ -69,9 +70,9 @@ static struct resource i2c_resource3[] = {
 
 static struct resource i2c_resource4[] = {
 	[0] = {
-		.start	= INT_DVC,
-		.end	= INT_DVC,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_DVC,
+		.end    = INT_DVC,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_DVC_BASE,
@@ -122,9 +123,9 @@ struct platform_device tegra_i2c_device4 = {
 
 static struct resource spi_resource1[] = {
 	[0] = {
-		.start	= INT_S_LINK1,
-		.end	= INT_S_LINK1,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_S_LINK1,
+		.end    = INT_S_LINK1,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_SPI1_BASE,
@@ -135,9 +136,9 @@ static struct resource spi_resource1[] = {
 
 static struct resource spi_resource2[] = {
 	[0] = {
-		.start	= INT_SPI_2,
-		.end	= INT_SPI_2,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_SPI_2,
+		.end    = INT_SPI_2,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_SPI2_BASE,
@@ -148,9 +149,9 @@ static struct resource spi_resource2[] = {
 
 static struct resource spi_resource3[] = {
 	[0] = {
-		.start	= INT_SPI_3,
-		.end	= INT_SPI_3,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_SPI_3,
+		.end    = INT_SPI_3,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_SPI3_BASE,
@@ -161,9 +162,9 @@ static struct resource spi_resource3[] = {
 
 static struct resource spi_resource4[] = {
 	[0] = {
-		.start	= INT_SPI_4,
-		.end	= INT_SPI_4,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_SPI_4,
+		.end    = INT_SPI_4,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_SPI4_BASE,
@@ -172,52 +173,62 @@ static struct resource spi_resource4[] = {
 	},
 };
 
+struct platform_device tegra_spi_slave_device1 = {
+	.name           = "tegra_spi_slave",
+	.id             = 0,
+	.resource       = spi_resource1,
+	.num_resources  = ARRAY_SIZE(spi_resource1),
+	.dev  = {
+		.coherent_dma_mask      = 0xffffffff,
+	},
+};
+
 struct platform_device tegra_spi_device1 = {
-	.name		= "spi_tegra",
-	.id		= 0,
-	.resource	= spi_resource1,
-	.num_resources	= ARRAY_SIZE(spi_resource1),
-	.dev		= {
-		.coherent_dma_mask	= 0xffffffff,
+	.name           = "spi_tegra",
+	.id             = 0,
+	.resource       = spi_resource1,
+	.num_resources  = ARRAY_SIZE(spi_resource1),
+	.dev  = {
+		.coherent_dma_mask      = 0xffffffff,
 	},
 };
 
 struct platform_device tegra_spi_device2 = {
-	.name		= "spi_tegra",
-	.id		= 1,
-	.resource	= spi_resource2,
-	.num_resources	= ARRAY_SIZE(spi_resource2),
-	.dev		= {
-		.coherent_dma_mask	= 0xffffffff,
+	.name           = "spi_tegra",
+	.id             = 1,
+	.resource       = spi_resource2,
+	.num_resources  = ARRAY_SIZE(spi_resource2),
+	.dev  = {
+		.coherent_dma_mask      = 0xffffffff,
 	},
 };
 
 struct platform_device tegra_spi_device3 = {
-	.name		= "spi_tegra",
-	.id		= 2,
-	.resource	= spi_resource3,
-	.num_resources	= ARRAY_SIZE(spi_resource3),
-	.dev		= {
-		.coherent_dma_mask	= 0xffffffff,
+	.name           = "spi_tegra",
+	.id             = 2,
+	.resource       = spi_resource3,
+	.num_resources  = ARRAY_SIZE(spi_resource3),
+	.dev  = {
+		.coherent_dma_mask      = 0xffffffff,
 	},
 };
 
 struct platform_device tegra_spi_device4 = {
-	.name		= "spi_tegra",
-	.id		= 3,
-	.resource	= spi_resource4,
-	.num_resources	= ARRAY_SIZE(spi_resource4),
-	.dev		= {
-		.coherent_dma_mask	= 0xffffffff,
+	.name           = "spi_tegra",
+	.id             = 3,
+	.resource       = spi_resource4,
+	.num_resources  = ARRAY_SIZE(spi_resource4),
+	.dev  = {
+		.coherent_dma_mask      = 0xffffffff,
 	},
 };
 
 
 static struct resource sdhci_resource1[] = {
 	[0] = {
-		.start	= INT_SDMMC1,
-		.end	= INT_SDMMC1,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_SDMMC1,
+		.end    = INT_SDMMC1,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_SDMMC1_BASE,
@@ -228,9 +239,9 @@ static struct resource sdhci_resource1[] = {
 
 static struct resource sdhci_resource2[] = {
 	[0] = {
-		.start	= INT_SDMMC2,
-		.end	= INT_SDMMC2,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_SDMMC2,
+		.end    = INT_SDMMC2,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_SDMMC2_BASE,
@@ -241,9 +252,9 @@ static struct resource sdhci_resource2[] = {
 
 static struct resource sdhci_resource3[] = {
 	[0] = {
-		.start	= INT_SDMMC3,
-		.end	= INT_SDMMC3,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_SDMMC3,
+		.end    = INT_SDMMC3,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_SDMMC3_BASE,
@@ -254,9 +265,9 @@ static struct resource sdhci_resource3[] = {
 
 static struct resource sdhci_resource4[] = {
 	[0] = {
-		.start	= INT_SDMMC4,
-		.end	= INT_SDMMC4,
-		.flags	= IORESOURCE_IRQ,
+		.start  = INT_SDMMC4,
+		.end    = INT_SDMMC4,
+		.flags  = IORESOURCE_IRQ,
 	},
 	[1] = {
 		.start	= TEGRA_SDMMC4_BASE,
@@ -294,6 +305,39 @@ struct platform_device tegra_sdhci_device4 = {
 	.id		= 3,
 	.resource	= sdhci_resource4,
 	.num_resources	= ARRAY_SIZE(sdhci_resource4),
+};
+
+static struct resource w1_resources[] = {
+	[0] = {
+		.start = INT_OWR,
+		.end   = INT_OWR,
+		.flags = IORESOURCE_IRQ
+	},
+	[1] = {
+		.start = TEGRA_OWR_BASE,
+		.end = TEGRA_OWR_BASE + TEGRA_OWR_SIZE - 1,
+		.flags = IORESOURCE_MEM
+	}
+};
+
+struct platform_device tegra_w1_device = {
+	.name          = "tegra_w1",
+	.id            = -1,
+	.resource      = w1_resources,
+	.num_resources = ARRAY_SIZE(w1_resources),
+};
+
+static struct resource tegra_udc_resources[] = {
+	[0] = {
+		.start	= TEGRA_USB_BASE,
+		.end	= TEGRA_USB_BASE + TEGRA_USB_SIZE - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= INT_USB,
+		.end	= INT_USB,
+		.flags	= IORESOURCE_IRQ,
+	},
 };
 
 static struct resource tegra_usb1_resources[] = {
@@ -335,6 +379,25 @@ static struct resource tegra_usb3_resources[] = {
 	},
 };
 
+static u64 tegra_udc_dmamask = DMA_BIT_MASK(32);
+
+static struct fsl_usb2_platform_data tegra_udc_pdata = {
+	.operating_mode	= FSL_USB2_DR_DEVICE,
+	.phy_mode	= FSL_USB2_PHY_UTMI,
+};
+
+struct platform_device tegra_udc_device = {
+	.name	= "fsl-tegra-udc",
+	.id	= -1,
+	.dev	= {
+		.dma_mask	= &tegra_udc_dmamask,
+		.coherent_dma_mask = DMA_BIT_MASK(32),
+		.platform_data	= &tegra_udc_pdata,
+	},
+	.resource = tegra_udc_resources,
+	.num_resources = ARRAY_SIZE(tegra_udc_resources),
+};
+
 static u64 tegra_ehci_dmamask = DMA_BIT_MASK(32);
 
 struct platform_device tegra_ehci1_device = {
@@ -370,139 +433,24 @@ struct platform_device tegra_ehci3_device = {
 	.num_resources = ARRAY_SIZE(tegra_usb3_resources),
 };
 
-static struct resource tegra_pmu_resources[] = {
+static struct resource tegra_otg_resources[] = {
 	[0] = {
-		.start	= INT_CPU0_PMU_INTR,
-		.end	= INT_CPU0_PMU_INTR,
-		.flags	= IORESOURCE_IRQ,
-	},
-	[1] = {
-		.start	= INT_CPU1_PMU_INTR,
-		.end	= INT_CPU1_PMU_INTR,
-		.flags	= IORESOURCE_IRQ,
-	},
-};
-
-struct platform_device tegra_pmu_device = {
-	.name		= "arm-pmu",
-	.id		= ARM_PMU_DEVICE_CPU,
-	.num_resources	= ARRAY_SIZE(tegra_pmu_resources),
-	.resource	= tegra_pmu_resources,
-};
-
-static struct resource tegra_uarta_resources[] = {
-	[0] = {
-		.start	= TEGRA_UARTA_BASE,
-		.end	= TEGRA_UARTA_BASE + TEGRA_UARTA_SIZE - 1,
+		.start	= TEGRA_USB_BASE,
+		.end	= TEGRA_USB_BASE + TEGRA_USB_SIZE - 1,
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
-		.start	= INT_UARTA,
-		.end	= INT_UARTA,
+		.start	= INT_USB,
+		.end	= INT_USB,
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
-static struct resource tegra_uartb_resources[] = {
-	[0] = {
-		.start	= TEGRA_UARTB_BASE,
-		.end	= TEGRA_UARTB_BASE + TEGRA_UARTB_SIZE - 1,
-		.flags	= IORESOURCE_MEM,
-	},
-	[1] = {
-		.start	= INT_UARTB,
-		.end	= INT_UARTB,
-		.flags	= IORESOURCE_IRQ,
-	},
-};
-
-static struct resource tegra_uartc_resources[] = {
-	[0] = {
-		.start	= TEGRA_UARTC_BASE,
-		.end	= TEGRA_UARTC_BASE + TEGRA_UARTC_SIZE - 1,
-		.flags	= IORESOURCE_MEM,
-	},
-	[1] = {
-		.start	= INT_UARTC,
-		.end	= INT_UARTC,
-		.flags	= IORESOURCE_IRQ,
-	},
-};
-
-static struct resource tegra_uartd_resources[] = {
-	[0] = {
-		.start	= TEGRA_UARTD_BASE,
-		.end	= TEGRA_UARTD_BASE + TEGRA_UARTD_SIZE - 1,
-		.flags	= IORESOURCE_MEM,
-	},
-	[1] = {
-		.start	= INT_UARTD,
-		.end	= INT_UARTD,
-		.flags	= IORESOURCE_IRQ,
-	},
-};
-
-static struct resource tegra_uarte_resources[] = {
-	[0] = {
-		.start	= TEGRA_UARTE_BASE,
-		.end	= TEGRA_UARTE_BASE + TEGRA_UARTE_SIZE - 1,
-		.flags	= IORESOURCE_MEM,
-	},
-	[1] = {
-		.start	= INT_UARTE,
-		.end	= INT_UARTE,
-		.flags	= IORESOURCE_IRQ,
-	},
-};
-
-struct platform_device tegra_uarta_device = {
-	.name	= "tegra_uart",
-	.id	= 0,
-	.num_resources	= ARRAY_SIZE(tegra_uarta_resources),
-	.resource	= tegra_uarta_resources,
-	.dev	= {
-		.coherent_dma_mask	= DMA_BIT_MASK(32),
-	},
-};
-
-struct platform_device tegra_uartb_device = {
-	.name	= "tegra_uart",
-	.id	= 1,
-	.num_resources	= ARRAY_SIZE(tegra_uartb_resources),
-	.resource	= tegra_uartb_resources,
-	.dev	= {
-		.coherent_dma_mask	= DMA_BIT_MASK(32),
-	},
-};
-
-struct platform_device tegra_uartc_device = {
-	.name	= "tegra_uart",
-	.id	= 2,
-	.num_resources	= ARRAY_SIZE(tegra_uartc_resources),
-	.resource	= tegra_uartc_resources,
-	.dev	= {
-		.coherent_dma_mask	= DMA_BIT_MASK(32),
-	},
-};
-
-struct platform_device tegra_uartd_device = {
-	.name	= "tegra_uart",
-	.id	= 3,
-	.num_resources	= ARRAY_SIZE(tegra_uartd_resources),
-	.resource	= tegra_uartd_resources,
-	.dev	= {
-		.coherent_dma_mask	= DMA_BIT_MASK(32),
-	},
-};
-
-struct platform_device tegra_uarte_device = {
-	.name	= "tegra_uart",
-	.id	= 4,
-	.num_resources	= ARRAY_SIZE(tegra_uarte_resources),
-	.resource	= tegra_uarte_resources,
-	.dev	= {
-		.coherent_dma_mask	= DMA_BIT_MASK(32),
-	},
+struct platform_device tegra_otg_device = {
+	.name		= "tegra-otg",
+	.id		= -1,
+	.resource	= tegra_otg_resources,
+	.num_resources	= ARRAY_SIZE(tegra_otg_resources),
 };
 
 static struct resource i2s_resource1[] = {
@@ -541,35 +489,6 @@ static struct resource i2s_resource2[] = {
 	}
 };
 
-struct platform_device tegra_i2s_device1 = {
-	.name		= "tegra-i2s",
-	.id		= 0,
-	.resource	= i2s_resource1,
-	.num_resources	= ARRAY_SIZE(i2s_resource1),
-};
-
-struct platform_device tegra_i2s_device2 = {
-	.name		= "tegra-i2s",
-	.id		= 1,
-	.resource	= i2s_resource2,
-	.num_resources	= ARRAY_SIZE(i2s_resource2),
-};
-
-static struct resource tegra_das_resources[] = {
-	[0] = {
-		.start = TEGRA_APB_MISC_DAS_BASE,
-		.end = TEGRA_APB_MISC_DAS_BASE + TEGRA_APB_MISC_DAS_SIZE - 1,
-		.flags = IORESOURCE_MEM,
-	},
-};
-
-struct platform_device tegra_das_device = {
-	.name		= "tegra-das",
-	.id		= -1,
-	.num_resources	= ARRAY_SIZE(tegra_das_resources),
-	.resource	= tegra_das_resources,
-};
-
 static struct resource spdif_resource[] = {
 	[0] = {
 		.start	= INT_SPDIF,
@@ -588,36 +507,40 @@ static struct resource spdif_resource[] = {
 	}
 };
 
+struct platform_device tegra_i2s_device1 = {
+	.name		= "i2s",
+	.id		= 0,
+	.resource	= i2s_resource1,
+	.num_resources	= ARRAY_SIZE(i2s_resource1),
+};
+
+struct platform_device tegra_i2s_device2 = {
+	.name		= "i2s",
+	.id		= 1,
+	.resource	= i2s_resource2,
+	.num_resources	= ARRAY_SIZE(i2s_resource2),
+};
+
 struct platform_device tegra_spdif_device = {
-	.name		= "tegra-spdif",
+	.name		= "spdif_out",
 	.id		= -1,
 	.resource	= spdif_resource,
 	.num_resources	= ARRAY_SIZE(spdif_resource),
 };
 
-struct platform_device tegra_pcm_device = {
-	.name = "tegra-pcm-audio",
-	.id = -1,
-};
-
-static struct resource w1_resources[] = {
+static struct resource das_resource[] = {
 	[0] = {
-		.start = INT_OWR,
-		.end   = INT_OWR,
-		.flags = IORESOURCE_IRQ
-	},
-	[1] = {
-		.start = TEGRA_OWR_BASE,
-		.end = TEGRA_OWR_BASE + TEGRA_OWR_SIZE - 1,
-		.flags = IORESOURCE_MEM
+		.start	= TEGRA_APB_MISC_BASE,
+		.end	= TEGRA_APB_MISC_BASE + TEGRA_APB_MISC_SIZE - 1,
+		.flags	= IORESOURCE_MEM
 	}
 };
 
-struct platform_device tegra_w1_device = {
-	.name          = "tegra_w1",
-	.id            = -1,
-	.resource      = w1_resources,
-	.num_resources = ARRAY_SIZE(w1_resources),
+struct platform_device tegra_das_device = {
+	.name		= "tegra_das",
+	.id		= -1,
+	.resource	= das_resource,
+	.num_resources	= ARRAY_SIZE(das_resource),
 };
 
 static struct resource tegra_gart_resources[] = {
@@ -640,6 +563,26 @@ struct platform_device tegra_gart_device = {
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(tegra_gart_resources),
 	.resource	= tegra_gart_resources
+};
+
+static struct resource pmu_resources[] = {
+	[0] = {
+		.start	= INT_CPU0_PMU_INTR,
+		.end	= INT_CPU0_PMU_INTR,
+		.flags	= IORESOURCE_IRQ,
+	},
+	[1] = {
+		.start	= INT_CPU1_PMU_INTR,
+		.end	= INT_CPU1_PMU_INTR,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+struct platform_device pmu_device = {
+	.name		= "arm-pmu",
+	.id		= ARM_PMU_DEVICE_CPU,
+	.num_resources	= ARRAY_SIZE(pmu_resources),
+	.resource	= pmu_resources,
 };
 
 #define CLK_RESET_RST_SOURCE	0x0
@@ -718,6 +661,121 @@ struct platform_device tegra_pwfm3_device = {
 	.id		= 3,
 	.num_resources	= 1,
 	.resource	= &tegra_pwfm3_resource,
+};
+
+static struct resource tegra_uarta_resources[] = {
+	[0] = {
+		.start 	= TEGRA_UARTA_BASE,
+		.end	= TEGRA_UARTA_BASE + TEGRA_UARTA_SIZE - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= INT_UARTA,
+		.end	= INT_UARTA,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct resource tegra_uartb_resources[]= {
+	[0] = {
+		.start 	= TEGRA_UARTB_BASE,
+		.end	= TEGRA_UARTB_BASE + TEGRA_UARTB_SIZE - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= INT_UARTB,
+		.end	= INT_UARTB,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct resource tegra_uartc_resources[] = {
+	[0] = {
+		.start 	= TEGRA_UARTC_BASE,
+		.end	= TEGRA_UARTC_BASE + TEGRA_UARTC_SIZE - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= INT_UARTC,
+		.end	= INT_UARTC,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct resource tegra_uartd_resources[] = {
+	[0] = {
+		.start 	= TEGRA_UARTD_BASE,
+		.end	= TEGRA_UARTD_BASE + TEGRA_UARTD_SIZE - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= INT_UARTD,
+		.end	= INT_UARTD,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct resource tegra_uarte_resources[] = {
+	[0] = {
+		.start 	= TEGRA_UARTE_BASE,
+		.end	= TEGRA_UARTE_BASE + TEGRA_UARTE_SIZE - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= INT_UARTE,
+		.end	= INT_UARTE,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+struct platform_device tegra_uarta_device = {
+	.name	= "tegra_uart",
+	.id	= 0,
+	.num_resources	= ARRAY_SIZE(tegra_uarta_resources),
+	.resource	= tegra_uarta_resources,
+	.dev	= {
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	},
+};
+
+struct platform_device tegra_uartb_device = {
+	.name	= "tegra_uart",
+	.id	= 1,
+	.num_resources	= ARRAY_SIZE(tegra_uartb_resources),
+	.resource	= tegra_uartb_resources,
+	.dev	= {
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	},
+};
+
+struct platform_device tegra_uartc_device = {
+	.name	= "tegra_uart",
+	.id	= 2,
+	.num_resources	= ARRAY_SIZE(tegra_uartc_resources),
+	.resource	= tegra_uartc_resources,
+	.dev	= {
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	},
+};
+
+struct platform_device tegra_uartd_device = {
+	.name	= "tegra_uart",
+	.id	= 3,
+	.num_resources	= ARRAY_SIZE(tegra_uartd_resources),
+	.resource	= tegra_uartd_resources,
+	.dev	= {
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	},
+};
+
+struct platform_device tegra_uarte_device = {
+	.name	= "tegra_uart",
+	.id	= 4,
+	.num_resources	= ARRAY_SIZE(tegra_uarte_resources),
+	.resource	= tegra_uarte_resources,
+	.dev	= {
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	},
 };
 
 static struct resource tegra_grhost_resources[] = {
@@ -810,64 +868,48 @@ struct platform_device tegra_aes_device = {
 	},
 };
 
-static struct resource tegra_kbc_resources[] = {
-       [0] = {
-               .start = TEGRA_KBC_BASE,
-               .end   = TEGRA_KBC_BASE + TEGRA_KBC_SIZE - 1,
-               .flags = IORESOURCE_MEM,
-       },
-       [1] = {
-               .start = INT_KBC,
-               .end   = INT_KBC,
-               .flags = IORESOURCE_IRQ,
-       },
+struct platform_device tegra_pcm_device = {
+        .name = "tegra-pcm-audio",
+        .id = -1,
+};
+static struct resource tegra_pmu_resources[] = {
+        [0] = {
+                .start  = INT_CPU0_PMU_INTR,
+                .end    = INT_CPU0_PMU_INTR,
+                .flags  = IORESOURCE_IRQ,
+        },
+        [1] = {
+                .start  = INT_CPU1_PMU_INTR,
+                .end    = INT_CPU1_PMU_INTR,
+                .flags  = IORESOURCE_IRQ,
+        },
 };
 
-struct platform_device tegra_kbc_device = {
-       .name		= "tegra-kbc",
-       .id		= -1,
-       .resource	= tegra_kbc_resources,
-       .num_resources	= ARRAY_SIZE(tegra_kbc_resources),
+struct platform_device tegra_pmu_device = {
+        .name           = "arm-pmu",
+        .id             = ARM_PMU_DEVICE_CPU,
+        .num_resources  = ARRAY_SIZE(tegra_pmu_resources),
+        .resource       = tegra_pmu_resources,
 };
 
 static struct resource tegra_rtc_resources[] = {
-	[0] = {
-		.start	= TEGRA_RTC_BASE,
-		.end	= TEGRA_RTC_BASE + TEGRA_RTC_SIZE - 1,
-		.flags	= IORESOURCE_MEM,
-	},
-	[1] = {
-		.start	= INT_RTC,
-		.end	= INT_RTC,
-		.flags	= IORESOURCE_IRQ,
-	},
+        [0] = {
+                .start  = TEGRA_RTC_BASE,
+                .end    = TEGRA_RTC_BASE + TEGRA_RTC_SIZE - 1,
+                .flags  = IORESOURCE_MEM,
+        },
+        [1] = {
+                .start  = INT_RTC,
+                .end    = INT_RTC,
+                .flags  = IORESOURCE_IRQ,
+        },
 };
+
 
 struct platform_device tegra_rtc_device = {
-	.name		= "tegra_rtc",
-	.id		= -1,
-	.resource	= tegra_rtc_resources,
-	.num_resources	= ARRAY_SIZE(tegra_rtc_resources),
+        .name           = "tegra_rtc",
+        .id             = -1,
+        .resource       = tegra_rtc_resources,
+        .num_resources  = ARRAY_SIZE(tegra_rtc_resources),
 };
 
-static struct resource tegra_camera_resources[] = {
-	{
-		.name	= "regs",
-		.start	= TEGRA_VI_BASE,
-		.end	= TEGRA_VI_BASE + TEGRA_VI_SIZE - 1,
-		.flags	= IORESOURCE_MEM,
-	},
-};
-
-static u64 tegra_camera_dma_mask = DMA_BIT_MASK(32);
-
-struct nvhost_device tegra_camera_device = {
-	.name		= "tegra-camera",
-	.id		= 0,
-	.dev		= {
-		.dma_mask		= &tegra_camera_dma_mask,
-		.coherent_dma_mask	= 0xffffffff,
-	},
-	.num_resources	= ARRAY_SIZE(tegra_camera_resources),
-	.resource	= tegra_camera_resources,
-};

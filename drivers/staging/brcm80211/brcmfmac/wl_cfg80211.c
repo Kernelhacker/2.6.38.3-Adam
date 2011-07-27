@@ -43,7 +43,7 @@
 #if LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,38)
 /* 2.6.38 doesn't have "band" arguement */
 #define ieee80211_channel_to_frequency(chan, band) \
-		ieee80211_channel_to_frequency(chan)
+                ieee80211_channel_to_frequency(chan)
 
 #endif
 
@@ -2121,12 +2121,12 @@ static s32 wl_cfg80211_suspend(struct wiphy *wiphy)
 	 * While going to suspend if associated with AP disassociate
 	 * from AP to save power while system is in suspended state
 	 */
-	if (test_bit(WL_STATUS_CONNECTED, &wl->status) ||
-		test_bit(WL_STATUS_CONNECTING, &wl->status)) {
-
+	if (test_bit(WL_STATUS_CONNECTED, &wl->status) &&
+		test_bit(WL_STATUS_READY, &wl->status)) {
 		WL_INFO("Disassociating from AP"
 			" while entering suspend state\n");
 		wl_link_down(wl);
+
 		/*
 		 * Make sure WPA_Supplicant receives all the event
 		 * generated due to DISASSOC call to the fw to keep
@@ -2149,6 +2149,8 @@ static s32 wl_cfg80211_suspend(struct wiphy *wiphy)
 	}
 	clear_bit(WL_STATUS_SCANNING, &wl->status);
 	clear_bit(WL_STATUS_SCAN_ABORTING, &wl->status);
+	clear_bit(WL_STATUS_CONNECTING, &wl->status);
+	clear_bit(WL_STATUS_CONNECTED, &wl->status);
 
 	/* Inform SDIO stack not to switch off power to the chip */
 	sdioh_sdio_set_host_pm_flags(MMC_PM_KEEP_POWER);
@@ -2593,11 +2595,11 @@ static bool wl_is_nonetwork(struct wl_priv *wl, const wl_event_msg_t *e)
 {
 	u32 event = be32_to_cpu(e->event_type);
 	u32 status = be32_to_cpu(e->status);
+	u16 flags = be16_to_cpu(e->flags);
 
 	if (event == WLC_E_LINK && status == WLC_E_STATUS_NO_NETWORKS) {
 		WL_CONN("Processing Link %s & no network found\n",
-				be16_to_cpu(e->flags) & WLC_EVENT_MSG_LINK \
-						? "up" : "down");
+				flags & WLC_EVENT_MSG_LINK ? "up" : "down");
 		return true;
 	}
 
@@ -2614,7 +2616,6 @@ wl_notify_connect_status(struct wl_priv *wl, struct net_device *ndev,
 			 const wl_event_msg_t *e, void *data)
 {
 	s32 err = 0;
-	WL_TRACE("Enter\n");
 
 	if (wl_is_linkup(wl, e)) {
 		WL_CONN("Linkup\n");
@@ -2629,7 +2630,18 @@ wl_notify_connect_status(struct wl_priv *wl, struct net_device *ndev,
 			wl_bss_connect_done(wl, ndev, e, data, true);
 	} else if (wl_is_linkdown(wl, e)) {
 		WL_CONN("Linkdown\n");
-		wl_link_down(wl);
+		if (wl_is_ibssmode(wl)) {
+			if (test_and_clear_bit(WL_STATUS_CONNECTED,
+				&wl->status))
+				wl_link_down(wl);
+		} else {
+			if (test_and_clear_bit(WL_STATUS_CONNECTED,
+				&wl->status)) {
+				cfg80211_disconnected(ndev, 0, NULL, 0,
+					GFP_KERNEL);
+				wl_link_down(wl);
+			}
+		}
 		wl_init_prof(wl->profile);
 	} else if (wl_is_nonetwork(wl, e)) {
 		if (wl_is_ibssmode(wl))
@@ -2637,8 +2649,6 @@ wl_notify_connect_status(struct wl_priv *wl, struct net_device *ndev,
 		else
 			wl_bss_connect_done(wl, ndev, e, data, false);
 	}
-
-	WL_TRACE("Exit\n");
 
 	return err;
 }
@@ -2894,12 +2904,14 @@ wl_bss_connect_done(struct wl_priv *wl, struct net_device *ndev,
 			wl_update_prof(wl, NULL, &e->addr, WL_PROF_BSSID);
 			wl_update_bss_info(wl);
 		}
-		cfg80211_connect_result(ndev, wl_read_prof(wl, WL_PROF_BSSID),
-			conn_info->req_ie, conn_info->req_ie_len,
-			conn_info->resp_ie, conn_info->resp_ie_len,
-			completed ? WLAN_STATUS_SUCCESS \
-					: WLAN_STATUS_AUTH_TIMEOUT,
-			GFP_KERNEL);
+		cfg80211_connect_result(ndev,
+					(u8 *)wl_read_prof(wl, WL_PROF_BSSID),
+					conn_info->req_ie,
+					conn_info->req_ie_len,
+					conn_info->resp_ie,
+					conn_info->resp_ie_len,
+					completed ? WLAN_STATUS_SUCCESS : WLAN_STATUS_AUTH_TIMEOUT,
+					GFP_KERNEL);
 		if (completed)
 			set_bit(WL_STATUS_CONNECTED, &wl->status);
 		WL_CONN("Report connect result - connection %s\n",
@@ -4109,8 +4121,9 @@ static s32 __wl_cfg80211_down(struct wl_priv *wl)
 	clear_bit(WL_STATUS_READY, &wl->status);
 	clear_bit(WL_STATUS_SCANNING, &wl->status);
 	clear_bit(WL_STATUS_SCAN_ABORTING, &wl->status);
+	clear_bit(WL_STATUS_CONNECTING, &wl->status);
+	clear_bit(WL_STATUS_CONNECTED, &wl->status);
 
-	wl_link_down(wl);
 	wl_debugfs_remove_netdev(wl);
 
 	return 0;
@@ -4228,32 +4241,23 @@ static __used s32 wl_add_ie(struct wl_priv *wl, u8 t, u8 l, u8 *v)
 	return err;
 }
 
+
 static void wl_link_down(struct wl_priv *wl)
 {
-	struct net_device *ndev = wl_to_ndev(wl);
+	struct net_device *dev = NULL;
 	s32 err = 0;
 
 	WL_TRACE("Enter\n");
-	if (test_and_clear_bit(WL_STATUS_CONNECTED, &wl->status)) {
-		if (!wl_is_ibssmode(wl)) {
-			WL_CONN("Calling cfg80211_disconnected\n ");
-			cfg80211_disconnected(ndev, 0, NULL, 0,
-				GFP_KERNEL);
-		}
-		if (wl->link_up) {
-			WL_INFO("Call WLC_DISASSOC to stop excess roaming\n ");
-			err = wl_dev_ioctl(ndev, WLC_DISASSOC, NULL, 0);
-			if (unlikely(err))
-				WL_ERR("WLC_DISASSOC failed (%d)\n", err);
-			wl->link_up = false;
-		}
+	clear_bit(WL_STATUS_CONNECTED, &wl->status);
+
+	if (wl->link_up) {
+		dev = wl_to_ndev(wl);
+		WL_INFO("Call WLC_DISASSOC to stop excess roaming\n ");
+		err = wl_dev_ioctl(dev, WLC_DISASSOC, NULL, 0);
+		if (unlikely(err))
+			WL_ERR("WLC_DISASSOC failed (%d)\n", err);
+		wl->link_up = false;
 	}
-
-	if (wl_is_ibssmode(wl))
-		clear_bit(WL_STATUS_CONNECTING, &wl->status);
-	else
-		wl_bss_connect_done(wl, ndev, NULL, NULL, false);
-
 	WL_TRACE("Exit\n");
 }
 

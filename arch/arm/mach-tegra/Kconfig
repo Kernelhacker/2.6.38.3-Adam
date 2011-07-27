@@ -26,6 +26,11 @@ config TEGRA_PCI
 
 comment "Tegra board type"
 
+config MACH_ADAM
+       bool "Notion Ink Adam"
+       help
+         Support for the Notion Ink Adam tablet
+
 config MACH_AEBL
        bool "Aebl board"
        select MACH_SEABOARD
