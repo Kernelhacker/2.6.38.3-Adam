@@ -124,11 +124,11 @@ static int adam_wifi_power(int on)
         pr_debug("%s: %d\n", __func__, on);
 
         gpio_set_value(ADAM_WLAN_POWER, on);
-        mdelay(100);
+        mdelay(1000);
         gpio_set_value(ADAM_WLAN_RESET, on);
-        mdelay(200);
+        mdelay(2000);
 
-        if (on)
+        if (on)        
                 clk_enable(wifi_32k_clk);
         else
                 clk_disable(wifi_32k_clk);
@@ -144,28 +144,28 @@ static int adam_wifi_reset(int on)
 
 
 static struct tegra_sdhci_platform_data tegra_sdhci_platform_data2 = {
-	.cd_gpio = -1,
-	.wp_gpio = -1,
-	.power_gpio = -1,
+	.cd_gpio = -1, /* ADAM_SDHC2_CD,  */
+	.wp_gpio = -1,    /*    ADAM_SDHC2_WP, */
+	.power_gpio = -1, /*ADAM_SDHC2_POWER, */
 };
 
 static struct tegra_sdhci_platform_data tegra_sdhci_platform_data3 = {
-	.cd_gpio = ADAM_SDHC_CD,
+	.cd_gpio =   ADAM_SDHC_CD,
 	.wp_gpio = -1,
-	.power_gpio = ADAM_SDHC_POWER,
+	.power_gpio =  ADAM_SDHC_POWER, 
 };
 
 static struct tegra_sdhci_platform_data tegra_sdhci_platform_data4 = {
-	.cd_gpio = -1,
-	.wp_gpio = -1,
-	.power_gpio = -1,
+	.cd_gpio = -1, /* ADAM_SDHC4_CD, */
+	.wp_gpio = -1, /* ADAM_SDHC4_WP, */
+	.power_gpio = -1, /* ADAM_SDHC4_POWER , */
 };
 
 
 
 static struct platform_device *adam_sdhci_devices[] __initdata = {
 	&tegra_sdhci_device1,
-//	&tegra_sdhci_device2,
+	// &tegra_sdhci_device2,
 	&tegra_sdhci_device3,
 	&tegra_sdhci_device4,
 };
@@ -206,16 +206,21 @@ int __init adam_sdhci_register_devices(void)
 	tegra_sdhci_device3.dev.platform_data = &tegra_sdhci_platform_data3;
 	tegra_sdhci_device4.dev.platform_data = &tegra_sdhci_platform_data4;
 
+	/*
+	this here is noe done in kernel/drivers/mmc/host/sdhci-tegra.c
+        don't do that double, it breaks things!
+
 	gpio_request(tegra_sdhci_platform_data3.power_gpio, "sdhci3_power");
 	gpio_request(tegra_sdhci_platform_data3.cd_gpio, "sdhci3_cd");
 
 	gpio_direction_output(tegra_sdhci_platform_data3.power_gpio, 1);
 	gpio_direction_input(tegra_sdhci_platform_data3.cd_gpio);
+	*/
 	
 	ret = platform_add_devices(adam_sdhci_devices, ARRAY_SIZE(adam_sdhci_devices));
 	adam_wifi_init();
 	printk(KERN_INFO "SPucki wants powerup after init!\n");
-        adam_wifi_power(1);
+        adam_wifi_power(1); 
 	return ret;
 
 }

@@ -83,6 +83,18 @@
 #define ADAM_SDHC_WP		-1	/*1=Write Protected */
 #define ADAM_SDHC_POWER	TEGRA_GPIO_PD0
 
+
+#define ADAM_SDHC2_CD           TEGRA_GPIO_PH2
+#define ADAM_SDHC2_WP           TEGRA_GPIO_PH1
+#define ADAM_SDHC2_POWER            TEGRA_GPIO_PT3
+
+#define ADAM_SDHC4_CD               TEGRA_GPIO_PH2
+#define ADAM_SDHC4_WP               TEGRA_GPIO_PH3
+#define ADAM_SDHC4_POWER            TEGRA_GPIO_PI6
+
+
+
+
 #define ADAM_TS_IRQ		TEGRA_GPIO_PJ7
 #define ADAM_TS_RESET	TEGRA_GPIO_PH1
 #define ADAM_TS_POWER	TEGRA_GPIO_PK2

@@ -154,7 +154,6 @@ static struct tegra_suspend_platform_data adam_suspend = {
 static void __init tegra_adam_init(void)
 {
 	struct clk *clk;
-
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,38)	
 	tegra_common_init();
 #endif

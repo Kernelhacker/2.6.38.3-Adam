@@ -403,6 +403,8 @@ void __init tegra_gpio_config(struct tegra_gpio_table *table, int num)
 {
 	int i;
 
+	printk("tegra_gpio_config called");
+
 	for (i = 0; i < num; i++) {
 		int gpio = table[i].gpio;
 

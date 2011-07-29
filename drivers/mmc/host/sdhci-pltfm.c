@@ -66,6 +66,8 @@ static int __devinit sdhci_pltfm_probe(struct platform_device *pdev)
 
 	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!iomem) {
+		printk(KERN_ERR"1Probing of sdhci-pltfm failed: -ENOMEM\n");
+                
 		ret = -ENOMEM;
 		goto err;
 	}
@@ -81,6 +83,8 @@ static int __devinit sdhci_pltfm_probe(struct platform_device *pdev)
 		host = sdhci_alloc_host(&pdev->dev, sizeof(*pltfm_host));
 
 	if (IS_ERR(host)) {
+		printk(KERN_ERR"2Probing of sdhci-pltfm failed: PTR_ERR(host)\n");
+
 		ret = PTR_ERR(host);
 		goto err;
 	}
@@ -98,6 +102,8 @@ static int __devinit sdhci_pltfm_probe(struct platform_device *pdev)
 
 	if (!request_mem_region(iomem->start, resource_size(iomem),
 		mmc_hostname(host->mmc))) {
+		printk(KERN_ERR"3Probing of sdhci-pltfm failed: -EBUSY\n");
+
 		dev_err(&pdev->dev, "cannot request region\n");
 		ret = -EBUSY;
 		goto err_request;
@@ -106,6 +112,8 @@ static int __devinit sdhci_pltfm_probe(struct platform_device *pdev)
 	host->ioaddr = ioremap(iomem->start, resource_size(iomem));
 	if (!host->ioaddr) {
 		dev_err(&pdev->dev, "failed to remap registers\n");
+		printk(KERN_ERR"4Probing of sdhci-pltfm failed: -ENOMEM 2\n");
+
 		ret = -ENOMEM;
 		goto err_remap;
 	}
@@ -125,13 +133,18 @@ static int __devinit sdhci_pltfm_probe(struct platform_device *pdev)
 	return 0;
 
 err_add_host:
+	printk(KERN_ERR"Probing of sdhci-pltfm failed: err_request addhost\n");
 	if (pdata && pdata->exit)
 		pdata->exit(host);
 err_plat_init:
+	printk(KERN_ERR"Probing of sdhci-pltfm failed: err_plat_init\n");
 	iounmap(host->ioaddr);
 err_remap:
+	printk(KERN_ERR"Probing of sdhci-pltfm failed: err_remap\n");
 	release_mem_region(iomem->start, resource_size(iomem));
 err_request:
+	printk(KERN_ERR"Probing of sdhci-pltfm failed: err_request\n");
+
 	sdhci_free_host(host);
 err:
 	printk(KERN_ERR"Probing of sdhci-pltfm failed: %d\n", ret);
