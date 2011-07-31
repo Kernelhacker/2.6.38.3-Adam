@@ -138,7 +138,7 @@ static struct tegra_suspend_platform_data adam_suspend = {
 	.core_off_timer = 0x7f,
     .corereq_high = false,
 	.sysclkreq_high = true,
-	.suspend_mode = TEGRA_SUSPEND_LP0,
+	.suspend_mode = TEGRA_SUSPEND_LP1,
 #if LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,38) /* NB: 2.6.39+ handles this automatically */
 	.separate_req = true,	
 	.wake_enb = ADAM_WAKE_KEY_POWER | 
@@ -199,7 +199,7 @@ static void __init tegra_adam_init(void)
 	adam_gpu_register_devices();
 
 	/* Register Audio devices */
-	//adam_audio_register_devices();
+	// adam_audio_register_devices();
 
 	/* Register AES encryption devices */
 	adam_aes_register_devices();

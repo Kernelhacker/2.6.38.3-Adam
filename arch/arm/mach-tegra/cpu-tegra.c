@@ -436,7 +436,7 @@ static struct tegra_cpufreq_table_data *tegra_cpufreq_table_get(void)
 		cpufreq_frequency_table_cpuinfo(&policy,
 			cpufreq_tables[i].freq_table);
 		if ((policy.max * 1000) == cpu_clk->max_rate) {
-			ret = &cpufreq_tables[i];
+			ret = &cpufreq_tables[i]; 
 			goto out;
 		}
 	}
