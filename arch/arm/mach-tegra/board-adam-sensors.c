@@ -33,7 +33,7 @@ static struct i2c_board_info __initdata adam_i2c_bus2_sensor_info[] = {
 		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PV5),
 	 },
 	{
-		I2C_BOARD_INFO("bq20z75-battery", 0x0B),
+		I2C_BOARD_INFO("bq20z75", 0x0B),
 		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PH2),
 	},
 };
