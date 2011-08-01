@@ -90,6 +90,7 @@ static bool isl29023_set_range(struct i2c_client *client, unsigned long range,
 {
 	unsigned long supp_ranges[] = {1000, 4000, 16000, 64000};
 	int i;
+	int ret;
 
 	for (i = 0; i < (ARRAY_SIZE(supp_ranges) -1); ++i) {
 		if (range <= supp_ranges[i])
@@ -97,8 +98,9 @@ static bool isl29023_set_range(struct i2c_client *client, unsigned long range,
 	}
 	*new_range = (unsigned int)supp_ranges[i];
 
+
 	return isl29023_write_data(client, ISL29023_REG_ADD_COMMANDII,
-		i, COMMANDII_RANGE_MASK, COMMANDII_RANGE_SHIFT);
+		i, COMMANDII_RANGE_MASK, COMMANDII_RANGE_SHIFT); 
 }
 
 static bool isl29023_set_resolution(struct i2c_client *client,
@@ -377,13 +379,12 @@ static int isl29023_chip_init(struct i2c_client *client)
 	int i;
 	int new_adc_bit;
 	unsigned int new_range;
-
+	printk("isl29023 init");
 	isl29023_regulator_enable(client);
 
 	for (i = 0; i < ARRAY_SIZE(chip->reg_cache); i++) {
 		chip->reg_cache[i] = 0;
 	}
-
 	/* set defaults */
 	status = isl29023_set_range(client, chip->range, &new_range);
 	if (status)

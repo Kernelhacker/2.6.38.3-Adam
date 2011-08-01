@@ -27,26 +27,41 @@
 #include "board-adam.h"
 #include "gpio-names.h"
 
-static struct i2c_board_info __initdata adam_i2c_bus2_sensor_info[] = {
-	 {
-		I2C_BOARD_INFO("isl29023", 0x44),
-		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PV5),
-	 },
+static struct i2c_board_info __initdata adam_i2c_bus0_sensor_info[] = {
 	{
 		I2C_BOARD_INFO("bq20z75", 0x0B),
 		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PH2),
 	},
 };
+static struct i2c_board_info __initdata adam_i2c_bus2_sensor_info[] = {
+	 {
+		I2C_BOARD_INFO("isl29023", 0x44),
+		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PV5),
+	 },
+};
 
 int __init adam_sensors_register_devices(void)
 {
+	int err;
 	printk("Init Sensors (isl29023)");
 	tegra_gpio_enable(TEGRA_GPIO_PV5);
-	gpio_request(TEGRA_GPIO_PV5, "isl29023");
+	err=gpio_request(TEGRA_GPIO_PV5, "isl29023");
+	if (err) {
+		printk("Could not request TEGRA_GPIO_PV5!");
+	}
 	gpio_direction_input(TEGRA_GPIO_PV5);
+	if (err) {
+		printk("Could not set input TEGRA_GPIO_PV5!");
+	}
 	tegra_gpio_enable(TEGRA_GPIO_PH2);
 	gpio_request(TEGRA_GPIO_PH2, "ac_present");
 	gpio_direction_input(TEGRA_GPIO_PH2);
-	return i2c_register_board_info(0, adam_i2c_bus2_sensor_info,
+
+	i2c_register_board_info(0, adam_i2c_bus0_sensor_info,
+		ARRAY_SIZE(adam_i2c_bus0_sensor_info));
+
+ 	i2c_register_board_info(2, adam_i2c_bus2_sensor_info,
 		ARRAY_SIZE(adam_i2c_bus2_sensor_info));
+	return 0;
+;
 }
