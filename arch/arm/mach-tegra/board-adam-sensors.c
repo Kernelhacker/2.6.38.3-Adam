@@ -36,7 +36,7 @@ static struct i2c_board_info __initdata adam_i2c_bus0_sensor_info[] = {
 static struct i2c_board_info __initdata adam_i2c_bus2_sensor_info[] = {
 	 {
 		I2C_BOARD_INFO("isl29023", 0x44),
-		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PV5),
+/*		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PV5),*/
 	 },
 };
 
