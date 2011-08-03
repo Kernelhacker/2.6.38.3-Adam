@@ -49,7 +49,7 @@ static int adam_backlight_init(struct device *dev)
 	ret = gpio_direction_output(ADAM_BL_ENB, 1);
 	if (ret < 0)
 		gpio_free(ADAM_BL_ENB);
-/* Export isolated Backlight switch, so that can be used as PQI-Toggle! /*
+/* Export isolated Backlight switch, so that can be used as PQI-Toggle! */
         ret = gpio_export(ADAM_BL_ENB, 0);
         if(ret < 0)
                 gpio_free(ADAM_BL_ENB);

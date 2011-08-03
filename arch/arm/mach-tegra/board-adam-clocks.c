@@ -90,7 +90,7 @@ static __initdata struct tegra_clk_init_table adam_clk_init_table[] = {
 	{ "pll_c_out1",	"pll_c",		108000000,	true},		/* must be always on - system clock */
 
 	{ "sclk",		"pll_c_out1",	108000000,	true},		/* must be always on */
-	{ "hclk",		"sclk",			108000000,	true},		/* must be always on */
+//	{ "hclk",		"sclk",			108000000,	true},		/* must be always on */
 	{ "pclk",		"hclk",			 54000000,	true},		/* must be always on */
 
 	/* pll_a and pll_a_out0 are clock sources for audio interfaces */
