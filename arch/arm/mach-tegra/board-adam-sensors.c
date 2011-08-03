@@ -32,6 +32,10 @@ static struct i2c_board_info __initdata adam_i2c_bus0_sensor_info[] = {
 		I2C_BOARD_INFO("bq20z75", 0x0B),
 		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PH2),
 	},
+	{
+		I2C_BOARD_INFO("so340010_kbd",0x2c),
+		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PV6),
+	}
 };
 static struct i2c_board_info __initdata adam_i2c_bus2_sensor_info[] = {
 	 {
@@ -56,6 +60,10 @@ int __init adam_sensors_register_devices(void)
 	tegra_gpio_enable(TEGRA_GPIO_PJ0);
 	gpio_request(TEGRA_GPIO_PJ0, "lis33de");
 	gpio_direction_input(TEGRA_GPIO_PJ0);
+
+	tegra_gpio_enable(TEGRA_GPIO_PV6);
+	gpio_request(TEGRA_GPIO_PV6, "so340010_kbd");
+	gpio_direction_input(TEGRA_GPIO_PV6);
 
 	i2c_register_board_info(0, adam_i2c_bus0_sensor_info,
 		ARRAY_SIZE(adam_i2c_bus0_sensor_info));

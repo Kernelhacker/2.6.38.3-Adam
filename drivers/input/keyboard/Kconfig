@@ -520,4 +520,10 @@ config KEYBOARD_W90P910
 	  To compile this driver as a module, choose M here: the
 	  module will be called w90p910_keypad.
 
+config KEYBOARD_SO340010
+	boolean "SO340010 I2C Keyboard controller for capacitive keys"
+	depends on ARCH_TEGRA
+	help
+		Say Y here if you want to enable the touchkeys!
+
 endif
